@@ -1,1 +1,1 @@
-# MiniPy_ADAI
+# Mini Proyecto ADAI

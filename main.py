@@ -1,5 +1,5 @@
+# ---------------------- Clases Base ----------------------
 
-# Clases Base
 class Encuestado:
     def __init__(self, id, nombre, experticia, opinion):
         self.id = id
@@ -9,7 +9,6 @@ class Encuestado:
 
     def __str__(self):
         return f"({self.id}, Nombre:'{self.nombre}', Experticia:{self.experticia}, Opinión:{self.opinion})"
-
 
 class Pregunta:
     def __init__(self, id_pregunta):
@@ -32,12 +31,24 @@ class Pregunta:
         self.promedio_opinion = sum(e.opinion for e in self.encuestados) / n
         self.promedio_experticia = sum(e.experticia for e in self.encuestados) / n
 
+    def ordenar_opiniones(self, opiniones):
+        for i in range(1, len(opiniones)):
+            actual = opiniones[i]
+            j = i - 1
+            while j >= 0 and opiniones[j] > actual:
+                opiniones[j + 1] = opiniones[j]
+                j -= 1
+            opiniones[j + 1] = actual
+        return opiniones
+
     def calcular_estadisticas(self):
         n = len(self.encuestados)
         if n == 0:
             return
-        opiniones = sorted(e.opinion for e in self.encuestados)
-        self.mediana = opiniones[n // 2] if n % 2 == 1 else (opiniones[n // 2 - 1] + opiniones[n // 2]) / 2
+        opiniones = [e.opinion for e in self.encuestados]
+        self.ordenar_opiniones(opiniones)
+
+        self.mediana = opiniones[n // 2] if n % 2 == 1 else min(opiniones[n // 2 - 1], opiniones[n // 2])
 
         frecuencia = [0] * 11
         for op in opiniones:
@@ -48,7 +59,6 @@ class Pregunta:
         extremos = opiniones.count(0) + opiniones.count(10)
         self.extremismo = round(extremos / n, 2)
         self.consenso = round(max_freq / n, 2)
-
 
 class Tema:
     def __init__(self, nombre):
@@ -68,7 +78,6 @@ class Tema:
         self.promedio_general_experticia = sum(p.promedio_experticia for p in self.preguntas) / len(self.preguntas)
         self.total_encuestados = sum(len(p.encuestados) for p in self.preguntas)
 
-
 class Encuesta:
     def __init__(self):
         self.temas = []
@@ -80,7 +89,7 @@ class Encuesta:
     def agregar_encuestado_global(self, encuestado):
         self.todos_encuestados.append(encuestado)
 
-#Funciones Auxiliares 
+# ---------------------- Funciones Auxiliares ----------------------
 
 def buscar_encuestado_por_id(lista, id):
     for e in lista:
@@ -117,7 +126,6 @@ def ordenar_preguntas_por_tema(encuesta):
             )
         )
 
-# Definición del algoritmo de ordenamiento a utilizar en esta solución
 def ordenar_temas(encuesta):
     insertion_sort(
         encuesta.temas,
@@ -139,7 +147,7 @@ def calcular_promedios_y_estadisticas(encuesta):
 def ordenar_ranking_global(encuesta):
     insertion_sort(encuesta.todos_encuestados, lambda e: (-e.experticia, -e.id))
 
-#Entrada / Salida
+# ---------------------- Entrada / Salida ----------------------
 
 def leer_entrada_desde_archivo(nombre_archivo):
     with open(nombre_archivo, "r", encoding="utf-8") as archivo:
@@ -189,9 +197,9 @@ def guardar_salida_en_archivo(encuesta, archivo_salida):
 
         preguntas = [p for tema in encuesta.temas for p in tema.preguntas]
 
-        max_prom = max(preguntas, key=lambda p: (p.promedio_opinion, tuple(-x for x in id_pregunta_a_tupla(p.id_pregunta))))
+        max_prom = max(preguntas, key=lambda p: (p.promedio_opinion, -id_pregunta_a_tupla(p.id_pregunta)[0], -id_pregunta_a_tupla(p.id_pregunta)[1]))
         min_prom = min(preguntas, key=lambda p: (p.promedio_opinion, id_pregunta_a_tupla(p.id_pregunta)))
-        max_exp = max(preguntas, key=lambda p: (p.promedio_experticia, tuple(-x for x in id_pregunta_a_tupla(p.id_pregunta))))
+        max_exp = max(preguntas, key=lambda p: (p.promedio_experticia, -id_pregunta_a_tupla(p.id_pregunta)[0], -id_pregunta_a_tupla(p.id_pregunta)[1]))
         min_exp = min(preguntas, key=lambda p: (p.promedio_experticia, id_pregunta_a_tupla(p.id_pregunta)))
 
         max_med_val = max(p.mediana for p in preguntas)
@@ -206,8 +214,10 @@ def guardar_salida_en_archivo(encuesta, archivo_salida):
         min_mod_val = min(p.moda for p in preguntas)
         min_mod = min((p for p in preguntas if p.moda == min_mod_val), key=lambda p: id_pregunta_a_tupla(p.id_pregunta))
 
-        max_ext = max(preguntas, key=lambda p: (p.extremismo, tuple(-x for x in id_pregunta_a_tupla(p.id_pregunta))))
-        max_con = max(preguntas, key=lambda p: (p.consenso, -p.moda, tuple(-x for x in id_pregunta_a_tupla(p.id_pregunta))))
+        max_ext_val = max(p.extremismo for p in preguntas)
+        max_ext = min((p for p in preguntas if p.extremismo == max_ext_val), key=lambda p: id_pregunta_a_tupla(p.id_pregunta))
+
+        max_con = max(preguntas, key=lambda p: (p.consenso, -p.moda, id_pregunta_a_tupla(p.id_pregunta)))
 
         f.write("Resultados:\n")
         f.write(f"  Pregunta con mayor promedio de opinion: [{max_prom.promedio_opinion:.2f}] Pregunta: {max_prom.id_pregunta}\n")
@@ -221,11 +231,12 @@ def guardar_salida_en_archivo(encuesta, archivo_salida):
         f.write(f"  Pregunta con mayor extremismo: [{max_ext.extremismo:.2f}] Pregunta: {max_ext.id_pregunta}\n")
         f.write(f"  Pregunta con mayor consenso: [{max_con.consenso:.2f}] Pregunta: {max_con.id_pregunta}\n")
 
-# Main 
+
+# ---------------------- Main ----------------------
 
 if __name__ == "__main__":
-    archivo_entrada = "Test3.txt"
-    archivo_salida = "Salida_Test3.txt"
+    archivo_entrada = "Test2.txt"
+    archivo_salida = "Salida_Test2.txt"
 
     encuesta = leer_entrada_desde_archivo(archivo_entrada)
 

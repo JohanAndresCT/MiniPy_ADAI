@@ -21,5 +21,5 @@ Este proyecto implementa un sistema de análisis estadístico de encuestas para 
 2. Asegurarse de modificar al final del archivo `main.py` los nombres del archivo de entrada y salida si deseas correr un test diferente:
 
 ```python
-archivo_entrada = "Testn.txt" - Aquí cambias el numero (n) según la prueba que se desee ejecutar (input)
-archivo_salida = "Salida_Test1.txt" - Al ejecutarse se obtendrá otro txt con la salida para el test (output)
+archivo_entrada = "Testn.txt"   ## Aquí cambias el numero (n) según la prueba que se desee ejecutar (input)
+archivo_salida = "Salida_Test1.txt" ## Al ejecutarse se obtendrá otro txt con la salida para el test (output)

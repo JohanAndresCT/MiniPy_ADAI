@@ -235,8 +235,8 @@ def guardar_salida_en_archivo(encuesta, archivo_salida):
 # ---------------------- Main ----------------------
 
 if __name__ == "__main__":
-    archivo_entrada = "Test2.txt"
-    archivo_salida = "Salida_Test2.txt"
+    archivo_entrada = "Test4.txt"
+    archivo_salida = "Salida_Test4.txt"
 
     encuesta = leer_entrada_desde_archivo(archivo_entrada)
 

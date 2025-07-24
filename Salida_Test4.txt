@@ -1,0 +1,35 @@
+Resultados de la encuesta:
+
+[3.50] Tema 1:
+ [5.00] Pregunta 1.1: (2, 3, 5, 6, 7, 8, 9, 10, 1, 4)
+ [2.00] Pregunta 1.2: (15, 16, 13, 14, 11, 12)
+
+Lista de encuestados:
+(16, Nombre:'Jessica Sandoval', Experticia:5, Opinión:3)
+(15, Nombre:'Ricardo Pérez', Experticia:5, Opinión:3)
+(14, Nombre:'Daniela Torres', Experticia:5, Opinión:2)
+(13, Nombre:'Verónica López', Experticia:5, Opinión:2)
+(12, Nombre:'Luis Vargas', Experticia:5, Opinión:1)
+(11, Nombre:'Ana Mejía', Experticia:5, Opinión:1)
+(10, Nombre:'María Cano', Experticia:5, Opinión:5)
+(9, Nombre:'Santiago Reyes', Experticia:5, Opinión:5)
+(8, Nombre:'Diana Martínez', Experticia:5, Opinión:5)
+(7, Nombre:'Pablo Castillo', Experticia:5, Opinión:5)
+(6, Nombre:'Marcela Gómez', Experticia:5, Opinión:5)
+(5, Nombre:'Andrés Cárdenas', Experticia:5, Opinión:5)
+(4, Nombre:'Carolina Rojas', Experticia:5, Opinión:0)
+(3, Nombre:'Pedro Suárez', Experticia:5, Opinión:10)
+(2, Nombre:'Laura Jiménez', Experticia:5, Opinión:10)
+(1, Nombre:'Diego Morales', Experticia:5, Opinión:0)
+
+Resultados:
+  Pregunta con mayor promedio de opinion: [5.00] Pregunta: 1.1
+  Pregunta con menor promedio de opinion: [2.00] Pregunta: 1.2
+  Pregunta con mayor promedio de experticia: [5.00] Pregunta: 1.1
+  Pregunta con menor promedio de experticia: [5.00] Pregunta: 1.1
+  Pregunta con Mayor mediana de opinion: [5] Pregunta: 1.1
+  Pregunta con menor mediana de opinion: [2] Pregunta: 1.2
+  Pregunta con mayor moda de opinion: [5] Pregunta: 1.1
+  Pregunta con menor moda de opinion: [1] Pregunta: 1.2
+  Pregunta con mayor extremismo: [0.40] Pregunta: 1.1
+  Pregunta con mayor consenso: [0.60] Pregunta: 1.1

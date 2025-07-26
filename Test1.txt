@@ -1,0 +1,18 @@
+1 Sofia García 1 6
+2 Alejandro Torres 7 10
+3 Valentina Rodriguez 9 0
+4 Juan López 10 1
+5 Martina Martinez 7 0
+6 Sebastián Pérez 8 9
+7 Camila Fernández 2 7
+8 Mateo González 4 7
+9 Isabella Díaz 7 5
+10 Daniel Ruiz 2 9
+11 Luciana Sánchez 1 7
+12 Lucas Vásquez 6 8
+
+1.1 10 2
+1.2 1 9 12 6
+
+2.1 3 4 5
+2.2 11 8 7

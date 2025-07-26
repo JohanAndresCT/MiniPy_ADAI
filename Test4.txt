@@ -1,0 +1,20 @@
+1 Diego Morales 5 0
+2 Laura Jiménez 5 10
+3 Pedro Suárez 5 10
+4 Carolina Rojas 5 0
+5 Andrés Cárdenas 5 5
+6 Marcela Gómez 5 5
+7 Pablo Castillo 5 5
+8 Diana Martínez 5 5
+9 Santiago Reyes 5 5
+10 María Cano 5 5
+11 Ana Mejía 5 1
+12 Luis Vargas 5 1
+13 Verónica López 5 2
+14 Daniela Torres 5 2
+15 Ricardo Pérez 5 3
+16 Jessica Sandoval 5 3
+
+
+1.1 1 2 3 4 5 6 7 8 9 10
+1.2 11 12 13 14 15 16

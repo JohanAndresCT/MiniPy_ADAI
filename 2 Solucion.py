@@ -1,7 +1,14 @@
-
 # ---------------------- Clases Base ----------------------
 
 class Encuestado:
+    """
+    Representa a una persona que responde la encuesta.
+    Atributos:
+        - id: Identificador único.
+        - nombre: Nombre del encuestado.
+        - experticia: Nivel de conocimiento en el tema (0 a 10).
+        - opinion: Opinión sobre la pregunta (0 a 10).
+    """
     def __init__(self, id, nombre, experticia, opinion):
         self.id = id
         self.nombre = nombre
@@ -13,9 +20,13 @@ class Encuestado:
 
 
 class Pregunta:
+    """
+    Representa una pregunta de la encuesta.
+    Contiene los encuestados que la respondieron y estadísticas asociadas.
+    """
     def __init__(self, id_pregunta):
         self.id_pregunta = id_pregunta
-        self.encuestados = {}  # id -> Encuestado
+        self.encuestados = {}  # Diccionario id -> Encuestado
         self.promedio_opinion = 0.0
         self.promedio_experticia = 0.0
         self.mediana = 0.0
@@ -24,9 +35,11 @@ class Pregunta:
         self.consenso = 0.0
 
     def agregar_encuestado(self, encuestado):
+        """Agrega un encuestado que respondió esta pregunta."""
         self.encuestados[encuestado.id] = encuestado
 
     def calcular_promedios(self):
+        """Calcula los promedios de opinión y experticia."""
         datos = list(self.encuestados.values())
         n = len(datos)
         if n == 0:
@@ -35,6 +48,7 @@ class Pregunta:
         self.promedio_experticia = sum(e.experticia for e in datos) / n
 
     def ordenar_opiniones(self, opiniones):
+        """Ordena una lista de opiniones usando insertion sort."""
         for i in range(1, len(opiniones)):
             actual = opiniones[i]
             j = i - 1
@@ -45,27 +59,38 @@ class Pregunta:
         return opiniones
 
     def calcular_estadisticas(self):
+        """Calcula mediana, moda, extremismo y consenso."""
         datos = list(self.encuestados.values())
         n = len(datos)
         if n == 0:
             return
+
         opiniones = [e.opinion for e in datos]
         opiniones = self.ordenar_opiniones(opiniones[:])
 
+        # Mediana
         self.mediana = opiniones[n // 2] if n % 2 == 1 else min(opiniones[n // 2 - 1], opiniones[n // 2])
 
-        frecuencia = [0] * 11
+        # Moda
+        frecuencia = [0] * 11  # Para opiniones de 0 a 10
         for op in opiniones:
             frecuencia[op] += 1
         max_freq = max(frecuencia)
         self.moda = min(i for i, f in enumerate(frecuencia) if f == max_freq)
 
+        # Extremismo: porcentaje de opiniones 0 o 10
         extremos = opiniones.count(0) + opiniones.count(10)
         self.extremismo = round(extremos / n, 2)
+
+        # Consenso: proporción de la moda
         self.consenso = round(max_freq / n, 2)
 
 
 class Tema:
+    """
+    Representa un tema dentro de la encuesta.
+    Contiene preguntas asociadas y estadísticas generales.
+    """
     def __init__(self, nombre):
         self.nombre = nombre
         self.preguntas = {}  # id_pregunta -> Pregunta
@@ -77,6 +102,7 @@ class Tema:
         self.preguntas[pregunta.id_pregunta] = pregunta
 
     def calcular_estadisticas(self):
+        """Calcula promedios generales del tema y total de encuestados."""
         preguntas = list(self.preguntas.values())
         if not preguntas:
             return
@@ -86,6 +112,10 @@ class Tema:
 
 
 class Encuesta:
+    """
+    Representa la encuesta completa.
+    Contiene todos los temas y encuestados.
+    """
     def __init__(self):
         self.temas = {}  # nombre -> Tema
         self.encuestados = {}  # id -> Encuestado
@@ -100,6 +130,7 @@ class Encuesta:
 # ---------------------- Funciones Auxiliares ----------------------
 
 def insertion_sort(lista, key_fn):
+    """Ordena la lista según una función clave utilizando Insertion Sort."""
     for i in range(1, len(lista)):
         actual = lista[i]
         j = i - 1
@@ -110,17 +141,23 @@ def insertion_sort(lista, key_fn):
 
 
 def id_pregunta_a_tupla(id_str):
+    """Convierte un ID de pregunta '1.3' a una tupla (1, 3) para ordenar."""
     return tuple(map(int, id_str.split('.')))
 
 
 # ---------------------- Entrada / Salida ----------------------
 
 def leer_entrada_desde_archivo(nombre_archivo):
+    """
+    Lee el archivo de entrada, construye y retorna la estructura de la encuesta.
+    """
     with open(nombre_archivo, "r", encoding="utf-8") as archivo:
         contenido = archivo.read().strip()
+
     secciones = contenido.split("\n\n")
     encuesta = Encuesta()
 
+    # Leer encuestados
     for linea in secciones[0].splitlines():
         partes = linea.strip().split()
         id = int(partes[0])
@@ -129,6 +166,7 @@ def leer_entrada_desde_archivo(nombre_archivo):
         opinion = int(partes[-1])
         encuesta.agregar_encuestado(Encuestado(id, nombre, experticia, opinion))
 
+    # Leer temas y preguntas
     for i, bloque in enumerate(secciones[1:]):
         tema = Tema(f"Tema {i + 1}")
         for linea in bloque.strip().splitlines():
@@ -145,25 +183,41 @@ def leer_entrada_desde_archivo(nombre_archivo):
             tema.agregar_pregunta(pregunta)
         tema.calcular_estadisticas()
         encuesta.agregar_tema(tema)
+
     return encuesta
 
 
 def guardar_salida_en_archivo(encuesta, archivo_salida):
+    """
+    Genera el archivo de salida con los resultados ordenados y análisis final.
+    """
     temas = list(encuesta.temas.values())
+
+    # Ordenar temas por promedio de opinión, experticia y número de encuestados
     insertion_sort(temas, lambda t: (-t.promedio_general_opinion, -t.promedio_general_experticia, -t.total_encuestados))
 
     with open(archivo_salida, "w", encoding="utf-8") as f:
         f.write("Resultados de la encuesta:\n\n")
+
         for tema in temas:
             f.write(f"[{tema.promedio_general_opinion:.2f}] {tema.nombre}:\n")
             preguntas = list(tema.preguntas.values())
-            insertion_sort(preguntas, lambda p: (-p.promedio_opinion, -p.promedio_experticia, -len(p.encuestados), id_pregunta_a_tupla(p.id_pregunta)))
+
+            # Ordenar preguntas dentro del tema
+            insertion_sort(preguntas, lambda p: (
+                -p.promedio_opinion,
+                -p.promedio_experticia,
+                -len(p.encuestados),
+                id_pregunta_a_tupla(p.id_pregunta)
+            ))
+
             for p in preguntas:
                 enc = list(p.encuestados.values())
                 insertion_sort(enc, lambda e: (-e.opinion, -e.experticia, e.id))
                 f.write(f" [{p.promedio_opinion:.2f}] Pregunta {p.id_pregunta}: ({', '.join(str(e.id) for e in enc)})\n")
             f.write("\n")
 
+        # Lista de encuestados global
         f.write("Lista de encuestados:\n")
         enc = list(encuesta.encuestados.values())
         insertion_sort(enc, lambda e: (-e.experticia, -e.id))
@@ -171,7 +225,7 @@ def guardar_salida_en_archivo(encuesta, archivo_salida):
             f.write(f"{e}\n")
         f.write("\n")
 
-
+        # Análisis final: mayores y menores de los analisis de las preguntas
         preguntas = [p for t in temas for p in t.preguntas.values()]
 
         max_prom = max(preguntas, key=lambda p: (p.promedio_opinion, -id_pregunta_a_tupla(p.id_pregunta)[0], -id_pregunta_a_tupla(p.id_pregunta)[1]))
@@ -201,8 +255,8 @@ def guardar_salida_en_archivo(encuesta, archivo_salida):
 # ---------------------- Main ----------------------
 
 if __name__ == "__main__":
-    archivo_entrada = "Test4.txt"
-    archivo_salida = "Salida_Test4.txt"
+    archivo_entrada = "Test1.txt"
+    archivo_salida = "Salida_Test1.txt"
     encuesta = leer_entrada_desde_archivo(archivo_entrada)
     guardar_salida_en_archivo(encuesta, archivo_salida)
     print(f"Análisis guardado en {archivo_salida}")
